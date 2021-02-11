@@ -8,7 +8,6 @@ class MessageForm(FlaskForm):
 
     text = TextAreaField('text', validators=[DataRequired()])
 
-
 class UserAddForm(FlaskForm):
     """Form for adding users."""
 
@@ -23,3 +22,15 @@ class LoginForm(FlaskForm):
 
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[Length(min=6)])
+
+class UserEditForm(FlaskForm):
+    """ Edit the user"""
+
+    username = StringField('Username', validators=[DataRequired()])
+    email = StringField('E-mail', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[Length(min=6)])
+    image_url = StringField('Image URL (Optional)')
+    header_image_url = StringField('Header Image URL (Optional) ')
+    bio = StringField('Bio (Optional)')
+
+

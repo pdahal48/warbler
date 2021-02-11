@@ -4,6 +4,7 @@ from datetime import datetime
 
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import defaultload
 
 bcrypt = Bcrypt()
 db = SQLAlchemy()
@@ -83,10 +84,12 @@ class User(db.Model):
 
     bio = db.Column(
         db.Text,
+        default='Bio not found'
     )
 
     location = db.Column(
         db.Text,
+        default='Columbus, Ohio'
     )
 
     password = db.Column(
@@ -125,7 +128,7 @@ class User(db.Model):
         return len(found_user_list) == 1
 
     def is_following(self, other_user):
-        """Is this user following `other_use`?"""
+        """Is this user following `other_user`?"""
 
         found_user_list = [user for user in self.following if user == other_user]
         return len(found_user_list) == 1
@@ -168,6 +171,11 @@ class User(db.Model):
                 return user
 
         return False
+    
+    def hash_pwd(pwd):
+        return bcrypt.generate_password_hash(pwd).decode('UTF-8')
+
+
 
 
 class Message(db.Model):
@@ -198,6 +206,9 @@ class Message(db.Model):
     )
 
     user = db.relationship('User')
+
+
+
 
 
 def connect_db(app):
