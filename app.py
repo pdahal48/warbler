@@ -148,7 +148,9 @@ def users_show(user_id):
     """Show user profile."""
 
     user = User.query.get_or_404(user_id)
-
+    likes = Likes.query.filter_by(user_id = user_id).all()
+    count = len(likes)
+    # count = len(likes.user_id)
     # snagging messages in order from the database;
     # user.messages won't be in order by default
     messages = (Message
@@ -157,7 +159,8 @@ def users_show(user_id):
                 .order_by(Message.timestamp.desc())
                 .limit(100)
                 .all())
-    return render_template('users/show.html', user=user, messages=messages)
+
+    return render_template('users/show.html', user=user, messages=messages, likes=likes, count=count)
 
 
 @app.route('/users/<int:user_id>/following')
@@ -291,7 +294,7 @@ def messages_add():
 def messages_show(message_id):
     """Show a message."""
 
-    msg = Message.query.get(message_id)
+    msg = Message.query.get_or_404(message_id)
     return render_template('messages/show.html', message=msg)
 
 
@@ -299,11 +302,12 @@ def messages_show(message_id):
 def messages_destroy(message_id):
     """Delete a message."""
 
-    if not g.user:
+    message = Message.query.get_or_404(message_id)
+    if (g.user.id != message.user_id):
         flash("Access unauthorized.", "danger")
         return redirect("/")
 
-    msg = Message.query.get(message_id)
+    msg = Message.query.get_or_404(message_id)
     db.session.delete(msg)
     db.session.commit()
 
@@ -316,7 +320,6 @@ def messages_destroy(message_id):
 @app.route('/users/add_like/<int:msg_id>', methods=['GET', 'POST'])
 def add_like(msg_id):
 
-    likes = Likes.query.all()
     like = Likes.query.filter(Likes.message_id== msg_id)
     print(like)
     if not g.user:
