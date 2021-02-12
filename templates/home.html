@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
   <div class="row">
-
     <aside class="col-md-4 col-lg-3 col-sm-12" id="home-aside">
       <div class="card user-card">
         <div>
@@ -41,8 +40,7 @@
     <div class="col-lg-6 col-md-8 col-sm-12">
       <ul class="list-group" id="messages">
         {% for msg in messages %}
-        {% if g.user.is_following(msg.user) %}
-        
+        {% if g.user.is_following(msg.user)%}
           <li class="list-group-item">
             <a href="/messages/{{ msg.id  }}" class="message-link">
             <a href="/users/{{ msg.user.id }}">
@@ -55,7 +53,6 @@
             </div>
 
                 {% if msg in g.user.likes %}
-
                     <button class="btn btn-sm bg-info">
                       <a href="/users/remove_like/{{msg.id}}">
                       <i class="fa fa-star"></i></a>
